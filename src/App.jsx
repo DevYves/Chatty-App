@@ -18,13 +18,21 @@ const dataBase = {
   ]
 }
 
+
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state =
       dataBase;
+      this.enterSubmit = this.enterSubmit.bind(this);
 
 }
+
+enterSubmit(content) {
+  console.log(content);
+}
+
 
 componentDidMount() {
   console.log("componentDidMount <App />");
@@ -45,7 +53,7 @@ componentDidMount() {
     return (
     <div>
       <MessageList messages = {this.state.messages}/>
-      <ChatBar currentUser={this.state.currentUser}/>
+      <ChatBar enterSubmit={this.enterSubmit} currentUser={this.state.currentUser}/>
     </div>
     );
   }
