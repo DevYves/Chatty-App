@@ -13,15 +13,11 @@ this.onMessageKeyPress = this.onMessageKeyPress.bind(this);
 
 
 onMessageKeyPress(event) {
-let content = event.target.value;
-console.log(content);
-    if (event.key === 'Enter'){
-console.log('enter');
-}
-
-
-
- this.props.enterSubmit(event);
+  let content = event.target.value;
+  console.log(content);
+  if (event.key === 'Enter'){
+    this.props.enterSubmit(content);
+  }
 }
 
 

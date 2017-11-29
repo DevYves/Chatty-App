@@ -29,8 +29,12 @@ class App extends Component {
 
 }
 
+
 enterSubmit(content) {
-  console.log(content);
+  let newId = this.state.messages.length + 1;
+  const newMessage = {id: newId, username: "Michelle", content: content};
+  const messages = this.state.messages.concat(newMessage)
+  this.setState({messages: messages});
 }
 
 
