@@ -20,21 +20,32 @@ class App extends Component {
 
 //function which handles
 nameSubmit(content){
-  this.setState({
-    currentUser: {
-      name: content
+  let preName = this.state.currentUser.name;
+  console.log("content", content)
+  console.log("preName", preName)
+  if (content !== preName){
+    console.log("We got a new name here");
+    let current = dataBase.currentUser = {
+      name: "",
+      message: `${preName} changed their name to ${content}`,
+      type: "notification"
     }
-
-  });
-
+    console.log("current user", current);
+    this.socket.send(JSON.stringify(dataBase.currentUser));
+    this.setState({currentUser: {name: content }});
+  } else{
+    this.setState({currentUser: { name: preName}});
+  }
 }
+
 
 messageSubmit(content) {
   let name = this.state.currentUser.name
   let newId = this.state.messages.length + 1;
   let message = {
     name: name,
-    message: content
+    message: content,
+    type: "postMessage"
   };
   this.socket.send(JSON.stringify(message));
 
@@ -53,14 +64,9 @@ componentDidMount(){
       let messageObject = JSON.parse(message.data);
       console.log("Message object", messageObject);
       console.log("message type", messageObject.type);
-      switch(messageObject.type) {
-        case "postMessage":
+        console.log("POST A NEW MESSAGE");
           this.setState({ messages: this.state.messages.concat(messageObject) });
-            break;
-        default:
-          // show an error in the console if the message type is unknown
-          throw new Error("Unknown event type " + messageObject.type);
-      }
+
 
     });
 }
@@ -77,7 +83,6 @@ componentDidMount(){
   }
 }
 export default App;
-
 
 
 

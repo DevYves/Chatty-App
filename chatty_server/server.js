@@ -31,15 +31,22 @@ wss.broadcast = function broadcast(data) {
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
+  // let connection = {
+  //   content : "A user has connected",
+  //   type: "newUser"
+  // };
+  // wss.broadcast(JSON.stringify(connection));
+
+
   ws.on('message', function incoming(message) {
-    console.log(message);
+    console.log("initial message socket", message);
     let messageObject = JSON.parse(message);
     console.log("message object:", messageObject);
         let messageToBroadcast = {
             id: uuidv1(),
             username: messageObject.name,
             content: messageObject.message,
-            type: "postMessage"
+            type: messageObject.type
         };
         console.log(messageToBroadcast);
 
@@ -48,5 +55,12 @@ wss.on('connection', (ws) => {
 
 
   ws.on('close', () => console.log('Client disconnected'));
+
 });
+  // let close = {
+  //   content: "A user has disconnected",
+  //   type: "closeConnection"
+  // };
+  // wss.broadcast(JSON.stringify(close));
+
 

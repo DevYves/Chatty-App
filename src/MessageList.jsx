@@ -7,8 +7,10 @@ class MessageList extends Component {
         key = { message.id }
         user={ message.username }
         content={ message.content }
+        type={message.type}
          />
-    });
+        }
+    );
     console.log("Rendering <MessageList />");
     return (
 
