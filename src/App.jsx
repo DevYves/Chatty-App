@@ -13,11 +13,12 @@ class App extends Component {
     this.socket = null;
     this.state =
       dataBase;
-      this.enterSubmit = this.enterSubmit.bind(this);
       this.nameSubmit = this.nameSubmit.bind(this);
+      this.messageSubmit = this.messageSubmit.bind(this);
 
 }
 
+//function which handles
 nameSubmit(content){
   this.setState({
     currentUser: {
@@ -28,8 +29,7 @@ nameSubmit(content){
 
 }
 
-
-enterSubmit(content) {
+messageSubmit(content) {
   let name = this.state.currentUser.name
   let newId = this.state.messages.length + 1;
   let message = {
@@ -39,7 +39,6 @@ enterSubmit(content) {
   this.socket.send(JSON.stringify(message));
 
 }
-
 
 componentDidMount(){
     console.log('componentDidMount <App />');
@@ -62,11 +61,13 @@ componentDidMount(){
     return (
     <div>
       <MessageList messages = { this.state.messages }/>
-      <ChatBar nameSubmit={ this.nameSubmit } enterSubmit={ this.enterSubmit } currentUser={ this.state.currentUser }/>
+      <ChatBar messageSubmit={ this.messageSubmit } nameSubmit={ this.nameSubmit } currentUser={ this.state.currentUser }/>
     </div>
     );
   }
 }
 export default App;
+
+
 
 

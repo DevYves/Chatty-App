@@ -12,31 +12,19 @@ class ChatBar extends Component {
 
   onMessageKeyPress(event) {
     let content = event.target.value;
-    // console.log(content);
     if (event.key === 'Enter'){
-      this.props.enterSubmit(content);
+      this.props.messageSubmit(content);
       event.target.value = "";
     }
   }
 
   onUserNameInput(event) {
-    // console.log(this.props);
-    // capture input
+    //caputure the input
     let userName = event.target.value;
-    // set the app components current user state to value
+    //set the app components current user state to value
     this.props.nameSubmit(userName);
 
-
-
-    // let name = event.target.value;
-    // if (event.key === 'Enter'){
-    //   this.props.nameSubmit(name);
-    //   event.target.value ="";
-
     }
-  // }
-
-
 
     render() {
       console.log("Rendering  chatbar");
