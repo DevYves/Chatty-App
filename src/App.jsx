@@ -52,9 +52,19 @@ componentDidMount(){
     this.socket.addEventListener('message', (message) => {
       let messageObject = JSON.parse(message.data);
       console.log("Message object", messageObject);
-      this.setState({ messages: this.state.messages.concat(messageObject) });
+      console.log("message type", messageObject.type);
+      switch(messageObject.type) {
+        case "postMessage":
+          this.setState({ messages: this.state.messages.concat(messageObject) });
+            break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + messageObject.type);
+      }
+
     });
-  }
+}
+
 
   render() {
 
@@ -67,6 +77,7 @@ componentDidMount(){
   }
 }
 export default App;
+
 
 
 

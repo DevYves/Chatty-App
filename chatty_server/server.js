@@ -38,7 +38,8 @@ wss.on('connection', (ws) => {
         let messageToBroadcast = {
             id: uuidv1(),
             username: messageObject.name,
-            content: messageObject.message
+            content: messageObject.message,
+            type: "postMessage"
         };
         console.log(messageToBroadcast);
 
