@@ -5,7 +5,7 @@ A live single window chat application built using ReactJS and utilizing Websocke
 
 ## Final Product
 
-!["App Screenshot"](https://github.com/devYves/chatty-app/blob//docs/chatty-app.png)
+!["App Screenshot"](https://github.com/DevYves/Chatty-App/blob/master/docs/chatty-app.png)
 
 ### Dependencies
 
