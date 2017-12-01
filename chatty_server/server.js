@@ -29,10 +29,12 @@ wss.on('connection', (ws) => {
   let count = new Set(wss.clients);
   let countSize = count.size;
   let messageCount = {
+    id: uuidv1(),
     content: countSize,
     type: "countSize"
   }
   let newUserMessage = {
+    id: uuidv1(),
       content: "A new user has joined the Channel",
       type: "incomingNotification"
     }
@@ -68,19 +70,21 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
 
-    let newUserMessage = {
-      content: "A new user has left the channel",
-      type: "incomingNotification"
-    }
-    countSize = countSize - 1;
-
     let messageCount = {
+    id: uuidv1(),
     content: countSize,
     type: "countSize"
   }
 
+    let userExitMessage = {
+      id: uuidv1(),
+      content: "A new user has left the channel",
+      type: "incomingNotification"
+    }
+
+
     wss.broadcast(JSON.stringify(messageCount));
-    wss.broadcast(JSON.stringify(newUserMessage));
+    wss.broadcast(JSON.stringify(userExitMessage));
   });
 
 });

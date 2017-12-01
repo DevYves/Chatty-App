@@ -6,7 +6,7 @@ import NavBar from './NavBar.jsx';
 const dataBase = {
   currentUser: {name: "Bob"}, //
   messages: [],
-  count:1
+  count: null
 }
 
 class App extends Component {
