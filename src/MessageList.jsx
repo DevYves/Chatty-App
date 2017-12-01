@@ -11,7 +11,7 @@ class MessageList extends Component {
          />
         }
     );
-    console.log("Rendering <MessageList />");
+
     return (
 
       <main className="messageslist">

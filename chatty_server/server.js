@@ -1,5 +1,4 @@
 // server.js
-
 const express = require('express');
 const SocketServer = require('ws').Server;
 const WebSocket = require('ws');
@@ -10,7 +9,7 @@ const PORT = 3001;
 
 // Create a new express server
 const server = express()
-   // Make the express server serve static assets (html, javascript, css) from the /public folder
+
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
@@ -25,6 +24,7 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
+// --- on a socket connection the server keeps track of usercount and broadcasts a new user message to app.jsx
 wss.on('connection', (ws) => {
   let count = new Set(wss.clients);
   let countSize = count.size;
@@ -41,10 +41,10 @@ wss.on('connection', (ws) => {
   wss.broadcast(JSON.stringify(messageCount));
   wss.broadcast(JSON.stringify(newUserMessage));
 
+// --- listens for input from app.jsx and handles them as either notifactions or messages,
+// sending them back appended their new type
   ws.on('message', function incoming(message) {
     let messageObject = JSON.parse(message);
-    console.log("message on server", message);
-    console.log("message type on server", messageObject.type);
     switch(messageObject.type) {
     case "postMessage":
       let messageToBroadcast = {
@@ -68,6 +68,8 @@ wss.on('connection', (ws) => {
     }
   })
 
+// --- on close of a socket connetion the server updates the number of user connections
+// and brodcasts a user disconect message to app.jsx
   ws.on('close', () => {
 
     let messageCount = {

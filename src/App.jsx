@@ -4,7 +4,7 @@ import ChatBar from './ChatBar.jsx';
 import NavBar from './NavBar.jsx';
 
 const dataBase = {
-  currentUser: {name: "Bob"}, //
+  currentUser: {name: "Anonymous"}, //
   messages: [],
   count: null
 }
@@ -20,19 +20,15 @@ class App extends Component {
 
 }
 
-//function which handles
+//function which handles user name changes from chatbar.jsx
 nameSubmit(content){
   let preName = this.state.currentUser.name;
-  console.log("content", content)
-  console.log("preName", preName)
   if (content !== preName){
-    console.log("We got a new name here");
     let current = dataBase.currentUser = {
       name: "",
       message: `${preName} changed their name to ${content}`,
       type: "postNotification"
     }
-    console.log("current user", current);
     this.socket.send(JSON.stringify(dataBase.currentUser));
     this.setState({currentUser: {name: content }});
   } else{
@@ -40,10 +36,9 @@ nameSubmit(content){
   }
 }
 
-
+//function which handles message submissions on enter from chatbar.jsx
 messageSubmit(content) {
   let name = this.state.currentUser.name
-  let newId = this.state.messages.length + 1;
   let message = {
     name: name,
     message: content,
@@ -53,34 +48,29 @@ messageSubmit(content) {
 
 }
 
+
 componentDidMount(){
-    console.log('componentDidMount <App />');
-
   this.socket = new WebSocket('ws://localhost:3001');
-
   this.socket.onopen = function(event) {
     console.log("Connected to server.");
   }
-
+  //listens for messages from websockets and sets states depending on type
   this.socket.addEventListener('message', (message) => {
     let messageObject = JSON.parse(message.data);
-    console.log('MESSAGE', messageObject);
-
-   switch (messageObject.type) {
+    switch (messageObject.type) {
       case "incomingMessage":
       case "incomingNotification":
         this.setState({ messages: this.state.messages.concat(messageObject) });
-      break;
+        break;
       case "countSize":
-      this.setState({count: messageObject.content});
-      break;
+        this.setState({count: messageObject.content});
+        break;
       default:
-      throw new Error("Unknown event type " + messageObject.type);
+        throw new Error("Unknown event type " + messageObject.type);
     }
 
   });
 }
-
 
   render() {
 
