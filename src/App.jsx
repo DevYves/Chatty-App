@@ -30,7 +30,7 @@ nameSubmit(content){
     let current = dataBase.currentUser = {
       name: "",
       message: `${preName} changed their name to ${content}`,
-      type: "notification"
+      type: "postNotification"
     }
     console.log("current user", current);
     this.socket.send(JSON.stringify(dataBase.currentUser));
@@ -56,28 +56,29 @@ messageSubmit(content) {
 componentDidMount(){
     console.log('componentDidMount <App />');
 
-    this.socket = new WebSocket('ws://localhost:3001');
+  this.socket = new WebSocket('ws://localhost:3001');
 
-    this.socket.onopen = function(event) {
-      console.log("Connected to server.");
+  this.socket.onopen = function(event) {
+    console.log("Connected to server.");
+  }
+
+  this.socket.addEventListener('message', (message) => {
+    let messageObject = JSON.parse(message.data);
+    console.log('MESSAGE', messageObject);
+
+   switch (messageObject.type) {
+      case "incomingMessage":
+      case "incomingNotification":
+        this.setState({ messages: this.state.messages.concat(messageObject) });
+      break;
+      case "countSize":
+      this.setState({count: messageObject.content});
+      break;
+      default:
+      throw new Error("Unknown event type " + messageObject.type);
     }
 
-    this.socket.addEventListener('message', (message) => {
-      let messageObject = JSON.parse(message.data);
-      console.log('MESSAGE', messageObject);
-      //console.log("Message object", messageObject);
-      //console.log("message type", messageObject.type);
-        if (messageObject.type === "countSize") {
-        //console.log("NUMBER HERE", messageObject.content);
-          dataBase.count = messageObject.content;
-        //console.log(dataBase.count);
-          this.setState({count: messageObject.content});
-        } else {
-          this.setState({ messages: this.state.messages.concat(messageObject) });
-        }
-
-
-    });
+  });
 }
 
 

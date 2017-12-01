@@ -25,58 +25,52 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
-// Set up a callback that will run when a client connects to the server
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
 wss.on('connection', (ws) => {
   let count = new Set(wss.clients);
   let countSize = count.size;
-  console.log(count.size)
-  console.log('Client connected');
-
   let messageCount = {
     content: countSize,
     type: "countSize"
-
   }
   let newUserMessage = {
       content: "A new user has joined the Channel",
-      type: "notification"
+      type: "incomingNotification"
     }
-
-wss.broadcast(JSON.stringify(messageCount));
-wss.broadcast(JSON.stringify(newUserMessage));
-
-
-  // let connection = {
-  //   content : "A user has connected",
-  //   type: "newUser"
-  // };
-  // wss.broadcast(JSON.stringify(connection));
-
+  wss.broadcast(JSON.stringify(messageCount));
+  wss.broadcast(JSON.stringify(newUserMessage));
 
   ws.on('message', function incoming(message) {
-    console.log("initial message socket", message);
     let messageObject = JSON.parse(message);
-    console.log("message object:", messageObject);
-        let messageToBroadcast = {
-            id: uuidv1(),
-            username: messageObject.name,
-            content: messageObject.message,
-            type: messageObject.type
-        };
-        console.log(messageToBroadcast);
-        console.log("Number of people in the sever", count);
+    console.log("message on server", message);
+    console.log("message type on server", messageObject.type);
+    switch(messageObject.type) {
+    case "postMessage":
+      let messageToBroadcast = {
+          id: uuidv1(),
+          username: messageObject.name,
+          content: messageObject.message,
+          type: "incomingMessage"
+      }
+      wss.broadcast(JSON.stringify(messageToBroadcast));
+      break;
+    case "postNotification":
+      let notificationToBroadcast = {
+          id: uuidv1(),
+          username: messageObject.name,
+          content: messageObject.message,
+          type: "incomingNotification"
+        }
+      wss.broadcast(JSON.stringify(notificationToBroadcast));
 
-        wss.broadcast(JSON.stringify(messageToBroadcast));
-    });
-
+      break;
+    }
+  })
 
   ws.on('close', () => {
 
     let newUserMessage = {
       content: "A new user has left the channel",
-      type: "notification"
+      type: "incomingNotification"
     }
     countSize = countSize - 1;
 
@@ -85,16 +79,8 @@ wss.broadcast(JSON.stringify(newUserMessage));
     type: "countSize"
   }
 
-
     wss.broadcast(JSON.stringify(messageCount));
     wss.broadcast(JSON.stringify(newUserMessage));
   });
 
 });
-  // let close = {
-  //   content: "A user has disconnected",
-  //   type: "closeConnection"
-  // };
-  // wss.broadcast(JSON.stringify(close));
-
-

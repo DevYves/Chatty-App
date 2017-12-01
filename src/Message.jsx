@@ -4,7 +4,7 @@ class Message extends Component {
   render() {
     console.log("this.props.messages", this.props.type);
     console.log("Rendering  message");
-    if (this.props.type === "notification"){
+    if (this.props.type === "incomingNotification"){
        return (
       <div className="message system">
         {this.props.content}
