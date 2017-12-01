@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import MessageList from './MessageList.jsx'
 import ChatBar from './ChatBar.jsx';
+import NavBar from './NavBar.jsx';
 
 const dataBase = {
   currentUser: {name: "Bob"}, //
-  messages: []
+  messages: [],
+  count:1
 }
 
 class App extends Component {
@@ -62,10 +64,17 @@ componentDidMount(){
 
     this.socket.addEventListener('message', (message) => {
       let messageObject = JSON.parse(message.data);
-      console.log("Message object", messageObject);
-      console.log("message type", messageObject.type);
-        console.log("POST A NEW MESSAGE");
+      console.log('MESSAGE', messageObject);
+      //console.log("Message object", messageObject);
+      //console.log("message type", messageObject.type);
+        if (messageObject.type === "countSize") {
+        //console.log("NUMBER HERE", messageObject.content);
+          dataBase.count = messageObject.content;
+        //console.log(dataBase.count);
+          this.setState({count: messageObject.content});
+        } else {
           this.setState({ messages: this.state.messages.concat(messageObject) });
+        }
 
 
     });
@@ -78,6 +87,7 @@ componentDidMount(){
     <div>
       <MessageList messages = { this.state.messages }/>
       <ChatBar messageSubmit={ this.messageSubmit } nameSubmit={ this.nameSubmit } currentUser={ this.state.currentUser }/>
+      <NavBar count = { this.state.count } />
     </div>
     );
   }

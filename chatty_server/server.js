@@ -29,7 +29,24 @@ wss.broadcast = function broadcast(data) {
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
+  let count = new Set(wss.clients);
+  let countSize = count.size;
+  console.log(count.size)
   console.log('Client connected');
+
+  let messageCount = {
+    content: countSize,
+    type: "countSize"
+
+  }
+  let newUserMessage = {
+      content: "A new user has joined the Channel",
+      type: "notification"
+    }
+
+wss.broadcast(JSON.stringify(messageCount));
+wss.broadcast(JSON.stringify(newUserMessage));
+
 
   // let connection = {
   //   content : "A user has connected",
@@ -49,12 +66,29 @@ wss.on('connection', (ws) => {
             type: messageObject.type
         };
         console.log(messageToBroadcast);
+        console.log("Number of people in the sever", count);
 
         wss.broadcast(JSON.stringify(messageToBroadcast));
     });
 
 
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+
+    let newUserMessage = {
+      content: "A new user has left the channel",
+      type: "notification"
+    }
+    countSize = countSize - 1;
+
+    let messageCount = {
+    content: countSize,
+    type: "countSize"
+  }
+
+
+    wss.broadcast(JSON.stringify(messageCount));
+    wss.broadcast(JSON.stringify(newUserMessage));
+  });
 
 });
   // let close = {
